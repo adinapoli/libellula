@@ -8,24 +8,18 @@ module Application where
 ------------------------------------------------------------------------------
 import Control.Lens
 import Snap.Snaplet
-import Snap.Snaplet.Heist
-import Snap.Snaplet.Auth
-import Snap.Snaplet.Session
+import qualified Data.Map as Map
+import qualified Data.Text as T
+
+data LibellulaAction
+data LibellulaCtx = LibellulaCtx (Map.Map T.Text LibellulaAction)
 
 ------------------------------------------------------------------------------
 data App = App
-    { _heist :: Snaplet (Heist App)
-    , _sess :: Snaplet SessionManager
-    , _auth :: Snaplet (AuthManager App)
+    { _libellula :: Snaplet LibellulaCtx
     }
 
 makeLenses ''App
 
-instance HasHeist App where
-    heistLens = subSnaplet heist
-
-
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
-
-
