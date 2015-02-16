@@ -18,9 +18,7 @@ import           Snap.Snaplet
 
 ------------------------------------------------------------------------------
 import           Application
-
-handleServeCommand :: Handler App LibellulaCtx ()
-handleServeCommand = writeText "Hello"
+import           Handlers
 
 ------------------------------------------------------------------------------
 -- | The application's routes.

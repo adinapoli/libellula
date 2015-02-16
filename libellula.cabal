@@ -36,9 +36,11 @@ executable libellula
   other-modules:
     Site
     Application
+    Extras
   -- other-extensions:    
-  build-depends:       
-    base >=4.6 && < 5,
+  build-depends:
+    aeson                     >= 0.7.0.0,
+    base >=4.6 && < 5         ,
     bytestring                >= 0.9.1   && < 0.11,
     containers                >= 0.5.0.0,
     heist                     >= 0.14    && < 0.15,
