@@ -3,12 +3,18 @@ module Libellula.Types where
 
 import qualified Data.Map as Map
 import qualified Data.Text as T
-import Control.Monad.Trans.State.Strict
+import Control.Monad.Trans.Reader
 
-data LibellulaEnv  = LibellulaEnv {
-      _lib_cmds :: Map.Map T.Text LibellulaAction
+data LibellulaTree m = Leaf (LibellulaM m)
+                     | Node (Map.Map T.Text (LibellulaM m))
+-- NOTE: What if I want to go crazy with nesting?
+
+type LibellulaCommands m = Map.Map T.Text (LibellulaTree m)
+
+data LibellulaEnv m = LibellulaEnv {
+      _lib_cmds :: LibellulaCommands m
      }
 
-type LibellulaAction = LibellulaM ()
+type LibellulaAction = LibellulaM IO
 
-newtype LibellulaM a = LibellulaM { runLibellula :: StateT LibellulaEnv IO a }
+newtype LibellulaM m = LibellulaM { runLibellula :: ReaderT (LibellulaEnv m) m () }

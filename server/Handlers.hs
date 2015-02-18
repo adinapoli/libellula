@@ -8,6 +8,6 @@ import Application
 
 handleServeCommand :: Handler App LibellulaCtx ()
 handleServeCommand = do
- (cmd :: LibellulaCommand) <- reqJSON
- liftIO $ print cmd
- writeText (command cmd)
+  (cmd :: LibellulaCommand) <- reqJSON
+  liftIO $ print cmd
+  writeText (command cmd)
