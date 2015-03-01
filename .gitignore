@@ -9,3 +9,5 @@ shell.nix
 example/**.hi
 example/**.o
 log
+src/**/**/**.o
+src/**/**/**.hi
