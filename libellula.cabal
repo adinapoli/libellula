@@ -6,10 +6,8 @@ license:             MIT
 license-file:        LICENSE
 author:              Alfredo Di Napoli
 maintainer:          alfredo.dinapoli@gmail.com
--- copyright:           
 category:            Sound
 build-type:          Simple
--- extra-source-files:  
 cabal-version:       >=1.10
 
 Flag development
@@ -20,18 +18,20 @@ library
   exposed-modules:
     Libellula.Types
     Libellula.Numerals
+    Libellula.AST
+    Libellula.Parser
     Libellula
-  -- other-modules:       
-  -- other-extensions:    
   build-depends:
     base               >= 4.6 && < 5,
     text               <= 1.1.2.0,
+    attoparsec         >= 0.12.0.0,
     transformers       < 0.5.0.0,
     containers         >= 0.5.0.0
   hs-source-dirs:
     src
   ghc-options:
     -Wall
+    -Werror
     -threaded
     -funbox-strict-fields
   default-language:
@@ -47,7 +47,6 @@ executable libellula
   -- other-extensions:    
   build-depends:
     aeson                     >= 0.7.0.0,
-    attoparsec                >= 0.12.0.0,
     base >=4.6 && < 5         ,
     bytestring                >= 0.9.1   && < 0.11,
     containers                >= 0.5.0.0,
@@ -73,5 +72,28 @@ executable libellula
     cpp-options: -DDEVELOPMENT
     ghc-options: -threaded -w
   else
-    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
+    ghc-options: -threaded -Wall -Werror -fwarn-tabs -funbox-strict-fields -O2
                  -fno-warn-orphans -fno-warn-unused-do-bind
+
+test-suite libellula-tests
+  type:
+    exitcode-stdio-1.0
+  main-is:
+    Main.hs
+  other-modules:
+    Tests
+  hs-source-dirs:
+    test
+  default-language:
+    Haskell2010
+  ghc-options:
+    -threaded
+    "-with-rtsopts=-N"
+  build-depends:
+      libellula -any
+    , base
+    , QuickCheck
+    , tasty >= 0.9.0.1
+    , tasty-quickcheck
+    , tasty-hunit
+    , text

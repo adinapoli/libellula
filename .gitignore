@@ -11,3 +11,5 @@ example/**.o
 log
 src/**/**/**.o
 src/**/**/**.hi
+**.hi
+**.o

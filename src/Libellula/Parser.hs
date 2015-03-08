@@ -1,25 +1,40 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Libellula.Parser where
 
+import Prelude hiding (lookup)
+import qualified Data.List as List
 import Data.Char
 import Data.Attoparsec.Text
 import Libellula.AST
 import Data.Monoid
 import Control.Applicative
 import qualified Data.Text as T
+import qualified Data.Map.Strict as Map
 
-type ProvisionalCmdMap = [(T.Text, ())]
+class CmdMap c k v | c -> k, c -> v where
+  lookup :: k -> c -> Maybe v
+
+instance Eq a => CmdMap [(a,b)] a b where
+  lookup = List.lookup
+
+instance Ord a => CmdMap (Map.Map a b) a b where
+  lookup = Map.lookup
 
 -- This will eventually take a lookup map for the commands.
-ast :: ProvisionalCmdMap -> Parser [LibellulaAST]
+ast :: CmdMap c T.Text v => c -> Parser [LibellulaAST]
 ast = cmd T.empty
 
-term :: T.Text -> ProvisionalCmdMap -> Parser [LibellulaAST]
+term :: CmdMap c T.Text v => T.Text -> c -> Parser [LibellulaAST]
 term pc mp = cmd pc mp <|> many numeral <|> many1 textToken
 
-cmd :: T.Text -> ProvisionalCmdMap -> Parser [LibellulaAST]
+cmd :: CmdMap c T.Text v => T.Text -> c -> Parser [LibellulaAST]
 cmd pc mp = do
-  many space
+  _ <- many space
   end <- atEnd
   case end of
     True -> fail "Cmd exhausted."
@@ -48,7 +63,7 @@ numeral = nounNum <|> digitNum
 
 nounNum :: Parser LibellulaAST
 nounNum = do
-  many space
+  _ <- many space
   d <- many1 $ satisfy (not . isSpace)
   case T.toLower . T.pack $ d of
     "one" -> return $ Numeral 1
@@ -67,11 +82,11 @@ nounNum = do
 
 digitNum :: Parser LibellulaAST
 digitNum = do
-  many space
+  _ <- many space
   d <- read <$> many1 digit
   return $ Numeral d
 
 textToken :: Parser LibellulaAST
 textToken = do
-  many space
+  _ <- many space
   TextToken . T.pack <$> manyTill anyChar endOfInput
