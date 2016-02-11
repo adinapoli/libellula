@@ -10,23 +10,15 @@ category:            Sound
 build-type:          Simple
 cabal-version:       >=1.10
 
-Flag development
-  Description: Whether to build the server in development (interpreted) mode
-  Default: False
-
 library
   exposed-modules:
-    Libellula.Types
-    Libellula.Numerals
-    Libellula.AST
-    Libellula.Parser
-    Libellula
+    Libellula.API
   build-depends:
-    base               >= 4.6 && < 5,
-    text               <= 1.1.2.0,
-    attoparsec         >= 0.12.0.0,
-    transformers       < 0.5.0.0,
-    containers         >= 0.5.0.0
+    base               ,
+    text               ,
+    attoparsec         ,
+    mtl                ,
+    containers
   hs-source-dirs:
     src
   ghc-options:
@@ -39,42 +31,20 @@ library
 
 executable libellula
   main-is:
-    Main.hs
-  other-modules:
-    Site
-    Application
-    Extras
-  -- other-extensions:    
-  build-depends:
-    aeson                     >= 0.7.0.0,
-    base >=4.6 && < 5         ,
-    bytestring                >= 0.9.1   && < 0.11,
-    containers                >= 0.5.0.0,
-    heist                     >= 0.14    && < 0.15,
-    hint                      >= 0.4,
-    lens                      >= 3.7.6   && < 4.7,
-    MonadCatchIO-transformers >= 0.2.1   && < 0.4,
-    mtl                       >= 2       && < 3,
-    snap                      >= 0.13    && < 0.14,
-    snap-core                 >= 0.9     && < 0.10,
-    snap-server               >= 0.9     && < 0.10,
-    snap-loader-static        >= 0.9     && < 0.10,
-    text                      >= 0.11    && < 1.3,
-    time                      >= 1.1     && < 1.5,
-    xmlhtml                   >= 0.1     && < 0.3
+    Server.hs
   hs-source-dirs:
     server
+  other-modules:
+  -- other-extensions:    
+  build-depends:
+    aeson                     ,
+    base                      ,
+    servant                   ,
+    servant-swagger           ,
+    text
   default-language:    Haskell2010
-
-  if flag(development)
-    build-depends:
-      snap-loader-dynamic == 0.10.*
-    cpp-options: -DDEVELOPMENT
-    ghc-options: -threaded -w
-  else
-    ghc-options: -threaded -Wall -Werror -fwarn-tabs -funbox-strict-fields -O2
-                 -fno-warn-orphans -fno-warn-unused-do-bind
-
+  ghc-options: -threaded -Wall -Werror -fwarn-tabs -funbox-strict-fields -O2
+                 
 test-suite libellula-tests
   type:
     exitcode-stdio-1.0
@@ -93,7 +63,7 @@ test-suite libellula-tests
       libellula -any
     , base
     , QuickCheck
-    , tasty >= 0.9.0.1
+    , tasty
     , tasty-quickcheck
     , tasty-hunit
     , text

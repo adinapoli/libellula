@@ -1,0 +1,23 @@
+resolver: lts-3.22
+compiler: ghcjs-0.2.0.20151029_ghc-7.10.2
+compiler-check: match-exact
+setup-info:
+  ghcjs:
+    source:
+      ghcjs-0.2.0.20151029_ghc-7.10.2:
+        url: "https://github.com/nrolland/ghcjs/releases/download/v0.2.0.20151029/ghcjs-0.2.0.20151029.tar.gz"
+
+packages:
+- '.'
+
+- location:
+    git: git@github.com:ghcjs/ghcjs-jquery.git
+    commit: 7b25bff88c05d46b7fbfc3ae26106d112036c252
+
+extra-deps:
+  - ghcjs-dom-0.2.3.0
+  - servant-swagger-1.0.3
+  - swagger2-2.0.1
+
+flags: {}
+extra-package-dbs: []
