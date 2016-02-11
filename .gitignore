@@ -13,3 +13,5 @@ src/**/**/**.o
 src/**/**/**.hi
 **.hi
 **.o
+.stack-work
+libellula-app/.stack-work
